@@ -1,1 +1,2 @@
 predict=org.wso2.carbon.ml.siddhi.extension.PredictStreamProcessor
+streamlinreg=org.wso2.carbon.ml.siddhi.extension.streaming.StreamingLinearRegressionStreamProcessor
