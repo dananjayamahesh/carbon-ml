@@ -25,10 +25,11 @@ import java.util.List;
 
 public class StreamingLinearRegressionStreamProcessor extends StreamProcessor {
 
-    private int learnType;
+    private int learnType =0;
+    private int windowShift=1;
     private int paramCount = 0;                                         // Number of x variables +1
     private int calcInterval = 1;                                       // The frequency of regression calculation
-    private int batchSize = 10;                                 // Maximum # of events, used for regression calculation
+    private int batchSize = 10;                                   // Maximum # of events, used for regression calculation
     private double ci = 0.95;                                           // Confidence Interval
     private double miniBatchFraction=1;
     private int paramPosition = 0;
@@ -43,7 +44,7 @@ public class StreamingLinearRegressionStreamProcessor extends StreamProcessor {
     @Override
     protected List<Attribute> init(AbstractDefinition inputDefinition, ExpressionExecutor[] attributeExpressionExecutors, ExecutionPlanContext executionPlanContext) {
         paramCount = attributeExpressionLength;
-        int PARAM_WIDTH=6;
+        int PARAM_WIDTH=7;
         // Capture constant inputs
         if (attributeExpressionExecutors[0] instanceof ConstantExpressionExecutor) {
 
@@ -53,8 +54,9 @@ public class StreamingLinearRegressionStreamProcessor extends StreamProcessor {
             paramPosition = PARAM_WIDTH;
             try {
                 learnType = ((Integer) attributeExpressionExecutors[0].execute(null));
-                batchSize = ((Integer) attributeExpressionExecutors[1].execute(null));
-                numIterations = ((Integer) attributeExpressionExecutors[2].execute(null));
+                windowShift = ((Integer) attributeExpressionExecutors[1].execute(null));
+                batchSize = ((Integer) attributeExpressionExecutors[2].execute(null));
+                numIterations = ((Integer) attributeExpressionExecutors[3].execute(null));
 
             } catch (ClassCastException c) {
                 throw new ExecutionPlanCreationException("Calculation interval, batch size and range should be of type int");
@@ -62,17 +64,15 @@ public class StreamingLinearRegressionStreamProcessor extends StreamProcessor {
 
             try{
 
-                stepSize = ((Double) attributeExpressionExecutors[3].execute(null));
-                miniBatchFraction = ((Double) attributeExpressionExecutors[4].execute(null));
+                stepSize = ((Double) attributeExpressionExecutors[4].execute(null));
+                miniBatchFraction = ((Double) attributeExpressionExecutors[5].execute(null));
 
             }catch(ClassCastException c){
                 throw new ExecutionPlanCreationException("Step Size, Mini Batch Fraction should be in double format");
             }
 
             try {
-
-
-                ci = ((Double) attributeExpressionExecutors[5].execute(null));
+                ci = ((Double) attributeExpressionExecutors[6].execute(null));
             } catch (ClassCastException c) {
                 throw new ExecutionPlanCreationException("Confidence interval should be of type double and a value between 0 and 1");
             }
@@ -80,7 +80,7 @@ public class StreamingLinearRegressionStreamProcessor extends StreamProcessor {
         System.out.println("Parameters: "+" "+batchSize+" "+" "+ci+"\n");
         // Pick the appropriate regression calculator
 
-        streamingLinearRegression = new StreamingLinearRegression(0,paramCount, batchSize, ci, numIterations, stepSize, miniBatchFraction);
+        streamingLinearRegression = new StreamingLinearRegression(learnType,windowShift,paramCount, batchSize, ci, numIterations, stepSize, miniBatchFraction);
 
         // Add attributes for standard error and all beta values
         String betaVal;
@@ -119,7 +119,9 @@ public class StreamingLinearRegressionStreamProcessor extends StreamProcessor {
                 // Skip processing if user has specified calculation interval
                 if (outputData == null) {
                     streamEventChunk.remove();
+
                 } else {
+                    log.info("MSE: "+outputData[0]);
                     complexEventPopulater.populateComplexEvent(complexEvent, outputData);
                 }
             }
