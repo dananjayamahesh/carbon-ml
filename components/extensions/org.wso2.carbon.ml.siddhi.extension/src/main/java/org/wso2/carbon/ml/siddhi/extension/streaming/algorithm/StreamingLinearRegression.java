@@ -21,7 +21,7 @@ import java.util.Arrays;
  */
 public class StreamingLinearRegression {
     private int learnType=0;
-    private int windowShift=0;
+    private int windowShift=1;
     private int paramCount = 0;                                         // Number of x variables +1
     private int batchSize = 10;                                 // Maximum # of events, used for regression calculation
     private double ci = 0.95;                                           // Confidence Interval
