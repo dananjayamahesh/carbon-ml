@@ -43,7 +43,7 @@ public class StreamingClustering extends Thread{
     private static final Logger logger = LoggerFactory.getLogger(StreamingClustering.class);
 
 
-    public StreamingClusteringWithSamoa(int learnType,int paramCount, int batchSize, double ci, int numClusters,int numIteration, double alpha){
+    public StreamingClustering(int learnType,int paramCount, int batchSize, double ci, int numClusters,int numIteration, double alpha){
         this.learnType = learnType;
         this.paramCount =paramCount;
         this.numAttributes = paramCount;

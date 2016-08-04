@@ -12,7 +12,6 @@ import org.apache.samoa.moa.cluster.Cluster;
 import org.apache.samoa.moa.cluster.Clustering;
 import org.apache.samoa.moa.clusterers.KMeans;
 import org.apache.samoa.moa.clusterers.clustream.WithKmeans;
-import org.gsoc.samoa.streaming.gsocexample.GsocDestinationProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +24,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class StreamingClusteringEvaluationProcessor implements Processor{
     private static final long serialVersionUID = -6043613438148776446L;
     private int processorId;
-    private static final Logger logger = LoggerFactory.getLogger(STreamingClusteringEvaluationProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(StreamingClusteringEvaluationProcessor.class);
 
     String evalPoint;
     //public LinkedList<Clustering>samoaClusters;
@@ -34,7 +33,7 @@ public class StreamingClusteringEvaluationProcessor implements Processor{
     public int numClusters=0;
 
     Clustering gtClustering;
-    MyClusteringEvaluation(String evalPoint){
+    StreamingClusteringEvaluationProcessor(String evalPoint){
         this.evalPoint = evalPoint;
     }
     @Override
@@ -99,7 +98,7 @@ public class StreamingClusteringEvaluationProcessor implements Processor{
 
     @Override
     public Processor newProcessor(Processor p) {
-        StreamingClusteringEvaluationProcessor newEval = (STreamingClusteringEvaluationProcessor)p;
+        StreamingClusteringEvaluationProcessor newEval = (StreamingClusteringEvaluationProcessor)p;
         return newEval;
     }
 
