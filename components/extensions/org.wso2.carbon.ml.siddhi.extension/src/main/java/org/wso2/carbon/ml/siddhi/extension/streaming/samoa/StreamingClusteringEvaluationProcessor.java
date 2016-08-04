@@ -39,7 +39,7 @@ public class StreamingClusteringEvaluationProcessor implements Processor{
     @Override
     public boolean process(ContentEvent event) {
 
-        logger.info("Process");
+       // logger.info("Process");
         if (event instanceof ClusteringContentEvent) {
             logger.info(event.getKey()+""+evalPoint+"ClusteringContentEvent");
             ClusteringContentEvent e= (ClusteringContentEvent)event;

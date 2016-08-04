@@ -129,48 +129,7 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- Dependencies for Samoa-->
-			<dependency>
-				<groupId>org.apache.samoa</groupId>
-				<artifactId>samoa-api</artifactId>
-				<version>0.4.0-incubating</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.samoa</groupId>
-				<artifactId>samoa-local</artifactId>
-				<version>0.4.0-incubating</version>
-			</dependency>
-
-			<dependency>
-				<groupId>com.github.javacliparser</groupId>
-				<artifactId>javacliparser</artifactId>
-				<version>0.5.0</version>
-			</dependency>
-
-
-			<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-log4j12</artifactId>
-				<version>1.7.2</version>
-			</dependency>
-
-			<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-simple</artifactId>
-				<version>1.7.5</version>
-			</dependency>
-
-			<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>1.7.21</version>
-			</dependency>
-
-
-			<!-- Dependencies for Spark -->
+		<!-- Dependencies for Spark -->
 			<dependency>
 				<groupId>org.json.wso2</groupId>
 				<artifactId>json</artifactId>

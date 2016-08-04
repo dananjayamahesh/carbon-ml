@@ -36,7 +36,7 @@ public class StreamingClustering extends Thread{
 
     public ConcurrentLinkedQueue<double[]>cepEvents;
     public ConcurrentLinkedQueue<Clustering>samoaClusters;
-    public int maxNumEvents=0;
+    public int maxNumEvents=100000;
     public int numEventsReceived=0;
 
     public StreamingClusteringTaskBuilder clusteringTask;
@@ -62,9 +62,10 @@ public class StreamingClustering extends Thread{
 
         cepEvents = new ConcurrentLinkedQueue<double[]>();
         samoaClusters = new  ConcurrentLinkedQueue<Clustering>();
+        this.maxNumEvents = 100000;
         try {
 
-            this.clusteringTask = new StreamingClusteringTaskBuilder(this.numClusters,this.cepEvents, this.samoaClusters);
+            this.clusteringTask = new StreamingClusteringTaskBuilder(this.numClusters,this.cepEvents, this.samoaClusters, this.maxNumEvents);
         }catch(Exception e){
             System.out.println(e.toString());
         }
@@ -73,22 +74,24 @@ public class StreamingClustering extends Thread{
     }
 
     public void run(){
-        this.clusteringTask.initTask(paramCount,numClusters,batchSize);
+        this.clusteringTask.initTask(paramCount,numClusters,batchSize,maxNumEvents);
     }
 
     public Object[] cluster(double[] eventData) {
         // System.out.println("Events Added to the CEP Events");
         numEventsReceived++;
-        logger.info("CEP Event Received : "+numEventsReceived);
+        //logger.info("CEP Event Received : "+numEventsReceived);
         cepEvents.add(eventData);
         Object[] output;
         if(!samoaClusters.isEmpty()){
+
+            logger.info("Micro Clustering Done : Update the Model");
             output = new Object[numClusters +1];
             output[0] = 0.0;
-            System.out.println("++++ We got a hit ++++");
+            //System.out.println("++++ We got a hit ++++");
             Clustering clusters = samoaClusters.poll();
             int dim = clusters.dimension();
-            System.out.println("KMEANS CLusters size: "+ clusters.size());
+            //System.out.println("KMEANS CLusters size: "+ clusters.size());
             for (int i=0;i<numClusters;i++){
                 Cluster cluster= clusters.get(i);
                 String centerStr="";
@@ -98,6 +101,7 @@ public class StreamingClustering extends Thread{
                     centerStr += (","+center[i]);
                 }
                 output[i+1]= centerStr;
+                logger.info("Center :"+i+""+centerStr);
             }
             //for(int i=0;i<dim;i++){
             //  output[i+1] = ""      }

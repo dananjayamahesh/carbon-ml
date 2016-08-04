@@ -35,6 +35,7 @@ public class StreamingClusteringTaskBuilder {
     public ConcurrentLinkedQueue<double[]>cepEvents;
     public ConcurrentLinkedQueue<Clustering>samoaClusters ;
     public int numClusters=0;
+    public int maxNumEvents=100000;
 
     /**
      * The main method.
@@ -43,11 +44,12 @@ public class StreamingClusteringTaskBuilder {
      *          the arguments
      */
 
-    public StreamingClusteringTaskBuilder(int numClusters, ConcurrentLinkedQueue<double[]> cepEvents, ConcurrentLinkedQueue<Clustering>samoaClusters){
+    public StreamingClusteringTaskBuilder(int numClusters, ConcurrentLinkedQueue<double[]> cepEvents, ConcurrentLinkedQueue<Clustering>samoaClusters, int maxNumEvents){
         logger.info("StreamingClusteringTaskBuilder");
         this.numClusters = numClusters;
         this.cepEvents = cepEvents;
         this.samoaClusters = samoaClusters;
+        this.maxNumEvents = maxNumEvents;
 
     }
     public static void main(String[] args) {
@@ -90,16 +92,16 @@ public class StreamingClusteringTaskBuilder {
     }
 
 
-    public void initTask(int numAttributes, int numClusters, int batchSize){
+    public void initTask(int numAttributes, int numClusters, int batchSize, int maxNumEvents){
         String query="";
-        query ="org.gsoc.samoa.streaming.clustering.MyClustering -i 100000 -s  (org.gsoc.samoa.streaming.streams.MyClusteringStream -K "+numClusters+" -a "+numAttributes+") -l (org.apache.samoa.learners.clusterers.simple.DistributedClusterer -l (org.apache.samoa.learners.clusterers.ClustreamClustererAdapter -l (org.apache.samoa.moa.clusterers.clustream.WithKmeans  -m 3 -k 3)))";
+        query ="StreamingClusteringTask -f "+batchSize+" -i "+maxNumEvents+" -s  (org.wso2.carbon.ml.siddhi.extension.streaming.samoa.StreamingClusteringStream -K "+numClusters+" -a "+numAttributes+") -l (org.apache.samoa.learners.clusterers.simple.DistributedClusterer -l (org.apache.samoa.learners.clusterers.ClustreamClustererAdapter -l (org.apache.samoa.moa.clusterers.clustream.WithKmeans  -m 100 -k "+numClusters+")))";
         logger.info("QUERY: "+query);
         String args[]={query};
         this.initClusteringTask(args);
     }
 
     public void initClusteringTask(String[] args) {
-        logger.info("In Main");
+        logger.info("Initializing Samoa Clustering Topology");
         // ArrayList<String> tmpArgs = new ArrayList<String>(Arrays.asList(args));
 
         // args = tmpArgs.toArray(new String[0]);
@@ -119,7 +121,7 @@ public class StreamingClusteringTaskBuilder {
             cliString.append(" ").append(arg);
         }
         logger.debug("Command line string = {}", cliString.toString());
-        System.out.println("Command line string = " + cliString.toString());
+        logger.info("Command line string = " + cliString.toString());
 
 
         Task task;
@@ -128,7 +130,7 @@ public class StreamingClusteringTaskBuilder {
             logger.info("Successfully instantiating {}", task.getClass().getCanonicalName());
         } catch (Exception e) {
             logger.error("Fail to initialize the task", e);
-            System.out.println("Fail to initialize the task" + e);
+            logger.info("Fail to initialize the task" + e);
             return;
         }
         logger.info("A");
