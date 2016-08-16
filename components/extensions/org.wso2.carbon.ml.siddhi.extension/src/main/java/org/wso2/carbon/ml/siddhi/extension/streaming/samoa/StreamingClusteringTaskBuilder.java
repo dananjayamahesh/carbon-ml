@@ -6,11 +6,10 @@ import com.github.javacliparser.IntOption;
 import com.github.javacliparser.Option;
 import org.apache.samoa.moa.cluster.Clustering;
 import org.apache.samoa.tasks.Task;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.samoa.topology.impl.SimpleComponentFactory;
 import org.apache.samoa.topology.impl.SimpleEngine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -94,7 +93,11 @@ public class StreamingClusteringTaskBuilder {
 
     public void initTask(int numAttributes, int numClusters, int batchSize, int maxNumEvents){
         String query="";
-        query ="StreamingClusteringTask -f "+batchSize+" -i "+maxNumEvents+" -s  (org.wso2.carbon.ml.siddhi.extension.streaming.samoa.StreamingClusteringStream -K "+numClusters+" -a "+numAttributes+") -l (org.apache.samoa.learners.clusterers.simple.DistributedClusterer -l (org.apache.samoa.learners.clusterers.ClustreamClustererAdapter -l (org.apache.samoa.moa.clusterers.clustream.WithKmeans  -m 100 -k "+numClusters+")))";
+        //query ="org.gsoc.samoa.streaming.samoa.StreamingClusteringTask -f "+batchSize+" -i "+maxNumEvents+" -s  (org.gsoc.samoa.streaming.samoa.StreamingClusteringStream -K "+numClusters+" -a "+numAttributes+") -l (org.apache.samoa.learners.clusterers.simple.DistributedClusterer -l (org.apache.samoa.learners.clusterers.ClustreamClustererAdapter -l (org.apache.samoa.moa.clusterers.clustream.WithKmeans  -m 100 -k "+numClusters+")))";
+        //query ="org.wso2.carbon.ml.siddhi.extension.streaming.samoa.StreamingClusteringTask -f "+batchSize+" -i "+maxNumEvents+" -s  (org.wso2.carbon.ml.siddhi.extension.streaming.samoa.StreamingClusteringStream -K "+numClusters+" -a "+numAttributes+") -l (org.apache.samoa.learners.clusterers.simple.DistributedClusterer -l (org.apache.samoa.learners.clusterers.ClustreamClustererAdapter -l (org.apache.samoa.moa.clusterers.clustream.WithKmeans  -m 100 -k "+numClusters+")))";
+        //query = "org.apache.samoa.tasks.ClusteringEvaluation";
+        //query = "org.wso2.carbon.ml.siddhi.extension.streaming.samoa.StreamingClusteringTask";
+        query ="org.wso2.carbon.ml.siddhi.extension.streaming.samoa.StreamingClusteringTask -f "+batchSize+" -i "+maxNumEvents+" -s  (org.wso2.carbon.ml.siddhi.extension.streaming.samoa.StreamingClusteringStream -K "+numClusters+" -a "+numAttributes+") -l (org.apache.samoa.learners.clusterers.simple.DistributedClusterer -l (org.apache.samoa.learners.clusterers.ClustreamClustererAdapter -l (org.apache.samoa.moa.clusterers.clustream.WithKmeans  -m 100 -k "+numClusters+")))";
         logger.info("QUERY: "+query);
         String args[]={query};
         this.initClusteringTask(args);
@@ -133,19 +136,29 @@ public class StreamingClusteringTaskBuilder {
             logger.info("Fail to initialize the task" + e);
             return;
         }
+
+        //task = new StreamingClusteringTask();
         logger.info("A");
-        if(task instanceof StreamingClusteringTask){
+        if(task instanceof org.wso2.carbon.ml.siddhi.extension.streaming.samoa.StreamingClusteringTask){
+            logger.info("Task is a Streaming Clustering Task");
             StreamingClusteringTask t = (StreamingClusteringTask) task;
             t.setCepEvents(this.cepEvents);
             t.setSamoaClusters(this.samoaClusters);
             t.setNumClusters(this.numClusters);
 
+        }else{
+            /*
+            StreamingClusteringTask t = (StreamingClusteringTask) task;
+            t.setCepEvents(this.cepEvents);
+            t.setSamoaClusters(this.samoaClusters);
+            t.setNumClusters(this.numClusters); */
+            logger.info("Task is a Not Streaming Clustering Task");
         }
-        //logger.info("B");
+        logger.info("Successfully Initiating Task...");
         task.setFactory(new SimpleComponentFactory());
-        //logger.info("C");
+        logger.info("Successfully Set Samoa Component Factory");
         task.init();
-        //logger.info("D");
+        logger.info("Successfully Initiated The Samoa Task");
         SimpleEngine.submitTopology(task.getTopology());
 
         //logger.info("Simple ENgine Started");

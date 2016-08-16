@@ -1,35 +1,23 @@
 package org.wso2.carbon.ml.siddhi.extension.streaming.samoa;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.github.javacliparser.*;
 import org.apache.samoa.evaluation.ClusteringEvaluatorProcessor;
 import org.apache.samoa.learners.Learner;
 import org.apache.samoa.learners.clusterers.simple.ClusteringDistributorProcessor;
 import org.apache.samoa.learners.clusterers.simple.DistributedClusterer;
 import org.apache.samoa.moa.cluster.Clustering;
-import org.apache.samoa.streams.ClusteringEntranceProcessor;
 import org.apache.samoa.streams.InstanceStream;
-import org.apache.samoa.streams.clustering.ClusteringStream;
-import org.apache.samoa.streams.clustering.RandomRBFGeneratorEvents;
+import org.apache.samoa.tasks.Task;
 import org.apache.samoa.topology.ComponentFactory;
 import org.apache.samoa.topology.Stream;
 import org.apache.samoa.topology.Topology;
 import org.apache.samoa.topology.TopologyBuilder;
-import org.apache.samoa.tasks.Task;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.javacliparser.ClassOption;
-import com.github.javacliparser.Configurable;
-import com.github.javacliparser.FileOption;
-import com.github.javacliparser.FloatOption;
-import com.github.javacliparser.IntOption;
-import com.github.javacliparser.StringOption;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * A task that runs and evaluates a distributed clustering algorithm.
@@ -123,8 +111,11 @@ public class StreamingClusteringTask implements Task, Configurable {
         streamTrain = this.streamTrainOption.getValue();
 
         if(streamTrain instanceof StreamingClusteringStream ){
+            logger.info("Stream is a StreamingClusteringStream");
             StreamingClusteringStream myStream = (StreamingClusteringStream)streamTrain;
             myStream.setCepEvents(this.cepEvents);
+        }else{
+            logger.info("Stream is not a StreamingClusteringStream");
         }
 
 

@@ -57,7 +57,7 @@ public class StreamingLinearRegression {
         this.isBuiltModel = false;
         type=MODEL_TYPE.BATCH_PROCESS;
 
-        conf = new SparkConf().setMaster("local[*]").setAppName("Linear Regression Example").set("spark.driver.allowMultipleContexts", "true") ;
+        conf = new SparkConf().setMaster("local[*]").setAppName("Linear Regression Example").set("spark.driver.allowMultipleContexts", "true");
         sc = new JavaSparkContext(conf);
         eventsMem = new ArrayList<String>();
 

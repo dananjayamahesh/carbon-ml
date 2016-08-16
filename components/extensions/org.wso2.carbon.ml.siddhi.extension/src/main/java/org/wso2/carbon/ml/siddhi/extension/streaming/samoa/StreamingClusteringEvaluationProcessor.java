@@ -1,27 +1,22 @@
 package org.wso2.carbon.ml.siddhi.extension.streaming.samoa;
 
-import org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.apache.samoa.core.ContentEvent;
 import org.apache.samoa.core.Processor;
 import org.apache.samoa.evaluation.ClusteringEvaluationContentEvent;
 import org.apache.samoa.evaluation.ClusteringResultContentEvent;
 import org.apache.samoa.instances.Instance;
 import org.apache.samoa.learners.clusterers.ClusteringContentEvent;
-
-import org.apache.samoa.moa.cluster.Cluster;
 import org.apache.samoa.moa.cluster.Clustering;
-import org.apache.samoa.moa.clusterers.KMeans;
 import org.apache.samoa.moa.clusterers.clustream.WithKmeans;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by mahesh on 7/19/16.
  */
-public class StreamingClusteringEvaluationProcessor implements Processor{
+public class StreamingClusteringEvaluationProcessor implements Processor {
     private static final long serialVersionUID = -6043613438148776446L;
     private int processorId;
     private static final Logger logger = LoggerFactory.getLogger(StreamingClusteringEvaluationProcessor.class);
@@ -53,18 +48,19 @@ public class StreamingClusteringEvaluationProcessor implements Processor{
         }
 
         else if(event instanceof ClusteringResultContentEvent){
-            logger.info(event.getKey()+""+evalPoint+"ClusteringResultContentEvent\n");
+            logger.info(event.getKey()+" "+evalPoint+" ClusteringResultContentEvent "+numClusters+"\n");
             ClusteringResultContentEvent resultEvent = (ClusteringResultContentEvent)event;
 
             // Clustering clustering = KMeans.gaussianMeans(gtClustering, resultEvent.getClustering());
             Clustering clustering=resultEvent.getClustering();
 
             Clustering kmeansClustering = WithKmeans.kMeans_rand(numClusters,clustering);
+            logger.info("Kmean Clusters: "+kmeansClustering.size()+" with dimention of : "+kmeansClustering.dimension());
             //Adding samoa Clusters into my class
             samoaClusters.add(kmeansClustering);
 
             int numClusters = clustering.size();
-            logger.info("Nunber of Clustering: "+numClusters);
+            logger.info("Number of Kernal Clusters : "+numClusters+" Number of KMeans Clusters :"+kmeansClustering.size());
           /*  for(int i=0;i<numClusters;i++){
                 Cluster cluster = clustering.get(i);
 

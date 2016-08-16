@@ -8,6 +8,8 @@ import org.apache.spark.mllib.clustering.KMeans;
 import org.apache.spark.mllib.clustering.KMeansModel;
 import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
+import scala.reflect.internal.Trees;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -56,10 +58,14 @@ public class StreamingKMeansClustering {
         this.alpha = alpha;
         this.isBuiltModel = false;
         type=MODEL_TYPE.BATCH_PROCESS;
-        conf = new SparkConf().setMaster("local[*]").setAppName("Linear Regression Example").set("spark.driver.allowMultipleContexts", "true") ;
-        sc = new JavaSparkContext(conf);
+        System.out.println("Initializing Spark ML Context");
+        try {
+            conf = new SparkConf().setMaster("local[*]").setAppName("Linear Regression Example").set("spark.driver.allowMultipleContexts", "true");
+            sc = new JavaSparkContext(conf);
+        }catch(Throwable t){
+             System.out.println(t.toString());
+        }
         eventsMem = new ArrayList<String>();
-
     }
 
     public Object[] cluster(Double[] eventData){
@@ -209,7 +215,7 @@ public class StreamingKMeansClustering {
 
         while(iter.hasNext()){
             int i= iter.next();
-            System.out.println(i);
+            //System.out.println(i);
             w[i]++;
 
         }

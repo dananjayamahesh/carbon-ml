@@ -2,12 +2,9 @@ package org.wso2.carbon.ml.siddhi.extension.streaming.samoa;
 
 import org.apache.samoa.moa.cluster.Cluster;
 import org.apache.samoa.moa.cluster.Clustering;
-import org.apache.samoa.tasks.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -36,7 +33,7 @@ public class StreamingClustering extends Thread{
 
     public ConcurrentLinkedQueue<double[]>cepEvents;
     public ConcurrentLinkedQueue<Clustering>samoaClusters;
-    public int maxNumEvents=100000;
+    public int maxNumEvents=1000000;
     public int numEventsReceived=0;
 
     public StreamingClusteringTaskBuilder clusteringTask;
@@ -53,7 +50,7 @@ public class StreamingClustering extends Thread{
         this.numIterations = numIteration ;
         this.alpha = alpha;
         this.isBuiltModel = false;
-        type=MODEL_TYPE.BATCH_PROCESS;
+        type= MODEL_TYPE.BATCH_PROCESS;
         // System.out.println("A");
         ///cepEvents = new LinkedList<double[]>();
         //  System.out.println("B");
@@ -62,14 +59,14 @@ public class StreamingClustering extends Thread{
 
         cepEvents = new ConcurrentLinkedQueue<double[]>();
         samoaClusters = new  ConcurrentLinkedQueue<Clustering>();
-        this.maxNumEvents = 100000;
+        this.maxNumEvents = 1000000;
         try {
 
             this.clusteringTask = new StreamingClusteringTaskBuilder(this.numClusters,this.cepEvents, this.samoaClusters, this.maxNumEvents);
         }catch(Exception e){
             System.out.println(e.toString());
         }
-
+        logger.info("Successfully Initiated the Streaming Clustering Topology");
 
     }
 
@@ -91,17 +88,17 @@ public class StreamingClustering extends Thread{
             //System.out.println("++++ We got a hit ++++");
             Clustering clusters = samoaClusters.poll();
             int dim = clusters.dimension();
-            //System.out.println("KMEANS CLusters size: "+ clusters.size());
+            logger.info("Number of KMeans Clusters : "+ clusters.size());
             for (int i=0;i<numClusters;i++){
                 Cluster cluster= clusters.get(i);
                 String centerStr="";
                 double [] center=cluster.getCenter();
                 centerStr += center[0];
                 for(int j=1;j<numAttributes;j++){
-                    centerStr += (","+center[i]);
+                    centerStr += (","+center[j]);
                 }
                 output[i+1]= centerStr;
-                logger.info("Center :"+i+""+centerStr);
+                //logger.info("Center :"+i+": "+centerStr);
             }
             //for(int i=0;i<dim;i++){
             //  output[i+1] = ""      }

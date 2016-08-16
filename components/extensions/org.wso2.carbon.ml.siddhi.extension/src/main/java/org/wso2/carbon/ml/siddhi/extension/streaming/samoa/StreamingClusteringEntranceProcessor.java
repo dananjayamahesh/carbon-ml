@@ -4,18 +4,14 @@ package org.wso2.carbon.ml.siddhi.extension.streaming.samoa;
 import org.apache.samoa.core.ContentEvent;
 import org.apache.samoa.core.EntranceProcessor;
 import org.apache.samoa.core.Processor;
-import org.apache.samoa.evaluation.ClusteringEvaluationContentEvent;
 import org.apache.samoa.instances.Instance;
 import org.apache.samoa.instances.Instances;
 import org.apache.samoa.learners.clusterers.ClusteringContentEvent;
-import org.apache.samoa.moa.cluster.Clustering;
 import org.apache.samoa.moa.core.DataPoint;
 import org.apache.samoa.moa.options.AbstractOptionHandler;
-import org.apache.samoa.streams.ClusteringEntranceProcessor;
 import org.apache.samoa.streams.InstanceStream;
 import org.apache.samoa.streams.StreamSource;
 import org.apache.samoa.streams.clustering.ClusteringStream;
-import org.apache.samoa.streams.clustering.RandomRBFGeneratorEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

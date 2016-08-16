@@ -63,7 +63,7 @@ public class StreamingKMeansClusteringStreamProcessor extends StreamProcessor {
                 throw new ExecutionPlanCreationException("Confidence interval should be of type double and a value between 0 and 1");
             }
         }
-        //System.out.println("Parameters: "+" "+batchSize+" "+" "+ci+"\n");
+        System.out.println("Parameters: "+" "+batchSize+" "+" "+ci+"\n");
         // Pick the appropriate regression calculator
 
         streamingKMeansClustering = new StreamingKMeansClustering(learnType,paramCount, batchSize, ci,numClusters, numIterations,alpha);

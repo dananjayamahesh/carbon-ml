@@ -6,7 +6,6 @@ import org.apache.samoa.moa.core.DataPoint;
 import org.apache.samoa.moa.core.Example;
 import org.apache.samoa.moa.core.InstanceExample;
 import org.apache.samoa.moa.core.ObjectRepository;
-import org.apache.samoa.moa.options.AbstractOptionHandler;
 import org.apache.samoa.moa.tasks.TaskMonitor;
 import org.apache.samoa.streams.InstanceStream;
 import org.apache.samoa.streams.clustering.ClusteringStream;
@@ -41,6 +40,7 @@ public class StreamingClusteringStream  extends ClusteringStream {
     protected void prepareForUseImpl(TaskMonitor taskMonitor, ObjectRepository objectRepository) {
         taskMonitor.setCurrentActivity("Preparing random RBF...", -1.0);
         this.numAttributes =this.numAttsOption.getValue();
+        logger.info("Number of Attributes in the Stream : "+this.numAttributes);
         generateHeader();
         restart();
         //logger.info("Succefully Prepare MyClusteringStream for Implementation");
